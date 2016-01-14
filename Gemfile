@@ -6,8 +6,10 @@ end
 
 if RUBY_VERSION < "1.9"
   gem "ruby-debug"
-else
+elsif RUBY_VERSION < '2.0'
   gem "ruby-debug19"
+else
+  gem 'byebug'
 end
 
 gemspec
