@@ -54,7 +54,7 @@ module Spree
 
     def refresh_product_document
       _price = Spree::Price.where(id: self.price_id).first
-      _price.variant.product.update_product_document! unless _price.nil?
+      _price.variant.product.save unless _price.nil?
     end
 
   end
