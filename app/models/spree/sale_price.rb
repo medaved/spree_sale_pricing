@@ -6,6 +6,8 @@ module Spree
     accepts_nested_attributes_for :calculator
     validates :calculator, :presence => true
 
+    after_save :refresh_product_document
+
     #attr_accessible :value, :start_at, :end_at, :enabled
 
     scope :active, lambda {
@@ -48,5 +50,12 @@ module Spree
     def stop
       update_attributes({ end_at: Time.now, enabled: false })
     end
+
+
+    def refresh_product_document
+      _price = Spree::Price.where(id: self.price_id).first
+      _price.variant.product.update_product_document! unless _price.nil?
+    end
+
   end
 end
