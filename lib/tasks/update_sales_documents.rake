@@ -8,7 +8,7 @@ namespace :spree_sale_pricing do
     lookup_hours = lookup_hours == 0 ? 1.day : lookup_hours.hours
 
     sale_prices = Spree::SalePrice.where('(end_at >= ?) AND (end_at <= ?)', Time.now - lookup_hours, Time.now)
-    sale_prices.each {|sp|  sp.refresh_product_document }
+    sale_prices.each {|sp| sp.disable; sp.refresh_product_document }
     #puts "#{sale_prices.count} documents"
 
   end
