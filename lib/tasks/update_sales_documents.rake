@@ -2,15 +2,13 @@
 namespace :spree_sale_pricing do
 
   desc "Update product documents when SalePrice is disabled"
-  task :udpate_product_documents => :environment do
-
-    lookup_hours = ENV['SALE_PRICE_LOOKUP_HOURS'].to_i
-    lookup_hours = lookup_hours == 0 ? 1.day : lookup_hours.hours
-
-    sale_prices = Spree::SalePrice.where('(end_at >= ?) AND (end_at <= ?)', Time.now - lookup_hours, Time.now)
-    sale_prices.each {|sp| sp.disable; sp.refresh_product_document }
-    #puts "#{sale_prices.count} documents"
-
+  task :update_product_documents, [:date] => :environment do |t, args|
+    return "No ending date specified" if !args[:date]
+    # assumption is that sales end at midnight of the following day
+    beginning_date = Time.zone.parse(args[:date]).beginning_of_day
+    ending_date = beginning_date.end_of_day + 1.day
+    sale_prices = Spree::SalePrice.where('(end_at >= ?) AND (end_at <= ?)', beginning_date, ending_date)
+    sale_prices.each {|sale_price| sale_price.disable; sale_price.refresh_product_document }
   end
 
 end
