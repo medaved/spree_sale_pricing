@@ -8,7 +8,7 @@ namespace :spree_sale_pricing do
     date_time = Time.zone.parse(args[:date_time])
     sale_prices = Spree::SalePrice.where("(end_at <= ?) AND (enabled = 't')", date_time)
     Rails.logger.info "Spree::SalePrice updating #{sale_prices.count} records."
-    sale_prices.each {|sale_price| sale_price.disable; sale_price.refresh_product_document }
+    sale_prices.each {|sale_price| sale_price.refresh_product_document }
   end
 
 end
