@@ -5,9 +5,8 @@ namespace :spree_sale_pricing do
   task :update_product_documents, [:date] => :environment do |t, args|
     return "No ending date specified" if !args[:date]
     # assumption is that sales end at midnight of the following day
-    beginning_date = Time.zone.parse(args[:date]).beginning_of_day
-    ending_date = beginning_date.end_of_day + 1.day
-    sale_prices = Spree::SalePrice.where('(end_at >= ?) AND (end_at <= ?)', beginning_date, ending_date)
+    date_time = Time.zone.parse(args[:date_time])
+    sale_prices = Spree::SalePrice.where("(end_at <= ?) AND (enabled = 't')", date_time)
     sale_prices.each {|sale_price| sale_price.disable; sale_price.refresh_product_document }
   end
 
